@@ -1,0 +1,9 @@
+websockets
+aiohttp
+pyyaml
+aiodns
+pysocks
+click
+cryptography
+h2
+async-timeout

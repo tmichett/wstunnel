@@ -1,0 +1,16 @@
+Metadata-Version: 2.4
+Name: wstunnel
+Version: 0.1.0
+Summary: A websocket tunnel
+Author-email: Your Name <you@example.com>
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: websockets
+Requires-Dist: aiohttp
+Requires-Dist: pyyaml
+Requires-Dist: aiodns
+Requires-Dist: pysocks
+Requires-Dist: click
+Requires-Dist: cryptography
+Requires-Dist: h2
+Requires-Dist: async-timeout
