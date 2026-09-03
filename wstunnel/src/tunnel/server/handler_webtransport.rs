@@ -44,7 +44,7 @@ pub(super) async fn run_webtransport_server(
     let tls_reloader = TlsReloader::new_for_server(server.config.clone())
         .with_context(|| "Cannot create the tls reloader for webtransport")?;
 
-    info!("Starting wstunnel webtransport server listening on udp://{bind}");
+    info!("Starting rhtlc-wstunnel webtransport server listening on udp://{bind}");
 
     loop {
         // Same contract as `TlsContext::tls_acceptor` on the TCP path: swap the certificate in

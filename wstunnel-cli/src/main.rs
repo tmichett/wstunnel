@@ -17,10 +17,17 @@ use tikv_jemallocator::Jemalloc;
 #[global_allocator]
 static GLOBAL: Jemalloc = Jemalloc;
 
-/// Use Websocket or HTTP2 protocol to tunnel {TCP,UDP} traffic
+/// Red Hat Training Lab Connector (RHTLC) WSTunnel uses Websockets or HTTP2 protocol to tunnel {TCP,UDP} traffic
 /// wsTunnelClient <---> wsTunnelServer <---> RemoteHost
+/// Specifically, this application will be used to tunnel TCP traffic and is to be used as the transport for the RHTLC Client application.
 #[derive(clap::Parser, Debug)]
-#[command(author, version, about, verbatim_doc_comment, long_about = None)]
+#[command(
+    name = "rhtlc-wstunnel",
+    version,
+    about,
+    long_about = None,
+    verbatim_doc_comment,
+)]
 pub struct Wstunnel {
     #[command(subcommand)]
     commands: Commands,
@@ -113,14 +120,14 @@ fn main() -> anyhow::Result<()> {
                     run_client(*args, DefaultTokioExecutor::default())
                         .await
                         .unwrap_or_else(|err| {
-                            panic!("Cannot start wstunnel client: {err:?}");
+                            panic!("Cannot start rhtlc-wstunnel client: {err:?}");
                         });
                 }
                 Commands::Server(args) => {
                     run_server(*args, DefaultTokioExecutor::default())
                         .await
                         .unwrap_or_else(|err| {
-                            panic!("Cannot start wstunnel server: {err:?}");
+                            panic!("Cannot start rhtlc-wstunnel server: {err:?}");
                         });
                 }
             }

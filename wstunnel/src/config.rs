@@ -30,9 +30,9 @@ pub struct ClientCreationRequest {
     /// 'tproxy+udp://[::1]:1212?timeout_sec=10'  listen locally on udp on port 1212 as a *transparent proxy* and forward dynamically requested tunnel
     ///                                           linux only and requires sudo/CAP_NET_ADMIN
     ///
-    /// 'stdio://google.com:443'         =>       listen for data from stdio, mainly for `ssh -o ProxyCommand="wstunnel client -L stdio://%h:%p ws://localhost:8080" my-server`
+    /// 'stdio://google.com:443'         =>       listen for data from stdio, mainly for `ssh -o ProxyCommand="rhtlc-wstunnel client -L stdio://%h:%p ws://localhost:8080" my-server`
     ///
-    /// 'unix:///tmp/wstunnel.sock:g.com:443' =>  listen for data from unix socket of path /tmp/wstunnel.sock and forward to g.com:443
+    /// 'unix:///tmp/rhtlc-wstunnel.sock:g.com:443' =>  listen for data from unix socket of path /tmp/rhtlc-wstunnel.sock and forward to g.com:443
     #[cfg_attr(feature = "clap", arg(short='L', long, value_name = "{tcp,udp,socks5,stdio,unix}://[BIND:]PORT:HOST:PORT", value_parser = parsers::parse_tunnel_arg, verbatim_doc_comment))]
     pub local_to_remote: Vec<LocalToRemote>,
 
@@ -42,12 +42,12 @@ pub struct ClientCreationRequest {
     /// 'udp://1212:1.1.1.1:53'          =>     listen on server for incoming udp on port 1212 and forward to cloudflare dns 1.1.1.1 on port 53 from local machine
     /// 'socks5://[::1]:1212'            =>     listen on server for incoming socks5 request on port 1212 and forward dynamically request from local machine (login/password is supported)
     /// 'http://[::1]:1212'         =>     listen on server for incoming http proxy request on port 1212 and forward dynamically request from local machine (login/password is supported)
-    /// 'unix://wstunnel.sock:g.com:443' =>     listen on server for incoming data from unix socket of path wstunnel.sock and forward to g.com:443 from local machine
+    /// 'unix://rhtlc-wstunnel.sock:g.com:443' =>     listen on server for incoming data from unix socket of path rhtlc-wstunnel.sock and forward to g.com:443 from local machine
     #[cfg_attr(feature = "clap", arg(short='R', long, value_name = "{tcp,udp,socks5,unix}://[BIND:]PORT:HOST:PORT", value_parser = parsers::parse_reverse_tunnel_arg, verbatim_doc_comment))]
     pub remote_to_local: Vec<LocalToRemote>,
 
     /// (linux only) Mark network packet with SO_MARK sockoption with the specified value.
-    /// You need to use {root, sudo, capabilities} to run wstunnel when using this option
+    /// You need to use {root, sudo, capabilities} to run rhtlc-wstunnel when using this option
     #[cfg_attr(feature = "clap", arg(long, value_name = "INT", verbatim_doc_comment))]
     pub socket_so_mark: Option<u32>,
 
@@ -105,7 +105,7 @@ pub struct ClientCreationRequest {
     )]
     pub tls_sni_disable: bool,
 
-    /// Enable ECH (encrypted sni) during TLS handshake to wstunnel server.
+    /// Enable ECH (encrypted sni) during TLS handshake to rhtlc-wstunnel server.
     /// Warning: Ech DNS config is not refreshed over time. It is retrieved only once at startup of the program  
     #[cfg_attr(feature = "clap", arg(long, verbatim_doc_comment))]
     pub tls_ech_enable: bool,
@@ -150,7 +150,7 @@ pub struct ClientCreationRequest {
     /// Use a specific prefix that will show up in the http path during the upgrade request.
     /// Useful if you need to route requests server side but don't have vhosts
     /// When using mTLS this option overrides the default behavior of using the common name of the
-    /// client's certificate. This will likely result in the wstunnel server rejecting the connection.
+    /// client's certificate. This will likely result in the rhtlc-wstunnel server rejecting the connection.
     #[cfg_attr(feature = "clap", arg(
         short = 'P',
         long,
@@ -193,18 +193,18 @@ pub struct ClientCreationRequest {
     #[cfg_attr(feature = "clap", arg(long, value_name = "FILE_PATH", verbatim_doc_comment))]
     pub http_headers_file: Option<PathBuf>,
 
-    /// Address of the wstunnel server
+    /// Address of the rhtlc-wstunnel server
     /// You can use websocket, http2 or webtransport as transport protocol. Use websocket if you are unsure.
-    /// Example: For websocket with TLS wss://wstunnel.example.com or without ws://wstunnel.example.com
-    ///          For http2 with TLS https://wstunnel.example.com or without http://wstunnel.example.com
-    ///          For webtransport wts://wstunnel.example.com (always TLS)
+    /// Example: For websocket with TLS wss://rhtlc-wstunnel.example.com or without ws://rhtlc-wstunnel.example.com
+    ///          For http2 with TLS https://rhtlc-wstunnel.example.com or without http://rhtlc-wstunnel.example.com
+    ///          For webtransport wts://rhtlc-wstunnel.example.com (always TLS)
     ///
     /// *WARNING* HTTP2 as transport protocol is harder to make it works because:
     ///   - If you are behind a (reverse) proxy/CDN they are going to buffer the whole request before forwarding it to the server
     ///     Obviously, this is not going to work for tunneling traffic
-    ///   - if you have wstunnel behind a reverse proxy, most of them (i.e: nginx) are going to turn http2 request into http1
+    ///   - if you have rhtlc-wstunnel behind a reverse proxy, most of them (i.e: nginx) are going to turn http2 request into http1
     ///     This is not going to work, because http1 does not support streaming naturally
-    ///   - The only way to make it works with http2 is to have wstunnel directly exposed to the internet without any reverse proxy in front of it
+    ///   - The only way to make it works with http2 is to have rhtlc-wstunnel directly exposed to the internet without any reverse proxy in front of it
     ///
     /// *WARNING* WEBTRANSPORT (wts://) runs on HTTP/3 over QUIC, so:
     ///   - It needs UDP to be reachable end to end on that port. Firewalls and container port
@@ -213,7 +213,7 @@ pub struct ClientCreationRequest {
     ///   - The server must be started with --enable-webtransport (or with the wts:// scheme)
     ///   - TLS is always used, as QUIC mandates TLS 1.3. There is no cleartext variant
     ///   - --http-proxy, --tls-sni-disable and --tls-ech-enable are not supported with it
-    #[cfg_attr(feature = "clap", arg(value_name = "ws[s]|http[s]|wts://wstunnel.server.com[:port]", value_parser = parsers::parse_server_url, verbatim_doc_comment))]
+    #[cfg_attr(feature = "clap", arg(value_name = "ws[s]|http[s]|wts://rhtlc-wstunnel.example.com[:port]", value_parser = parsers::parse_server_url, verbatim_doc_comment))]
     pub remote_addr: Url,
 
     /// [Optional] Certificate (pem) to present to the server when connecting over TLS (HTTPS).
@@ -259,7 +259,7 @@ pub struct ClientCreationRequest {
 #[derive(Debug)]
 #[cfg_attr(feature = "clap", derive(clap::Args))]
 pub struct ServerCreationRequest {
-    /// Address of the wstunnel server to bind to
+    /// Address of the rhtlc-wstunnel server to bind to
     /// Example: With TLS wss://0.0.0.0:8080 or without ws://[::]:8080
     ///
     /// The server is capable of detecting by itself if the request is websocket or http2. So you don't need to specify it.
@@ -280,7 +280,7 @@ pub struct ServerCreationRequest {
     pub enable_webtransport: bool,
 
     /// (linux only) Mark network packet with SO_MARK sockoption with the specified value.
-    /// You need to use {root, sudo, capabilities} to run wstunnel when using this option
+    /// You need to use {root, sudo, capabilities} to run rhtlc-wstunnel when using this option
     #[cfg_attr(feature = "clap", arg(long, value_name = "INT", verbatim_doc_comment))]
     pub socket_so_mark: Option<u32>,
 
