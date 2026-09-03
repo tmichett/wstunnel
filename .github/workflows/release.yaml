@@ -129,11 +129,14 @@ jobs:
           fi
 
       - name: Store artifact
+        # PR builds only need compile proof; artifacts are consumed on tag release (push to main/draft).
+        if: github.event_name != 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.BIN_NAME }}-${{ matrix.platform.target }}
           path: target/${{ matrix.platform.target }}/release${{ contains(matrix.platform.target, 'windows') && '-with-symbols' || '' }}/${{ env.BIN_NAME }}${{ contains(matrix.platform.target, 'windows') && '.exe' || '' }}
           retention-days: 7
+          compression-level: 9
 
   release:
     name: Release
