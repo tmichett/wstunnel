@@ -1,4 +1,4 @@
-# Using mTLS with wstunnel
+# Using mTLS with rhtlc-wstunnel
 
 ## Generating keys and certificates
 
@@ -9,14 +9,14 @@ or [Dogtag PKI](https://www.dogtagpki.org/) for example.
 
 These steps are based on: https://jamielinux.com/docs/openssl-certificate-authority/
 
-In order to setup wstunnel to authenticate clients with certificates (mTLS) one must have a certificate authority for
+In order to setup rhtlc-wstunnel to authenticate clients with certificates (mTLS) one must have a certificate authority for
 signing client certificates. In this example we will create a certificate authority using OpenSSL.
 
-Run these commands from a directory which we will use to store the CA's files. For example under `~/wstunnel/client_ca`
+Run these commands from a directory which we will use to store the CA's files. For example under `~/rhtlc-wstunnel/client_ca`
 
 ```shell
-$ mkdir -p $HOME/wstunnel/ca/{certs,csr,crl,newcerts,private}
-$ cd $HOME/wstunnel/ca/
+$ mkdir -p $HOME/rhtlc-wstunnel/ca/{certs,csr,crl,newcerts,private}
+$ cd $HOME/rhtlc-wstunnel/ca/
 $ echo 1000 > serial
 $ touch index.txt
 ```
@@ -30,7 +30,7 @@ default_ca = CA_default
 
 [ CA_default ]
 # Directory and file locations.
-dir               = $HOME/wstunnel/ca
+dir               = $HOME/rhtlc-wstunnel/ca
 certs             = \$dir/certs
 crl_dir           = \$dir/crl
 new_certs_dir     = \$dir/newcerts
@@ -131,7 +131,7 @@ Generate the private key of the certificate authority. Normally you would encryp
 development purposes we will leave it unencrypted.
 
 ```shell
-$ cd $HOME/wstunnel/ca/
+$ cd $HOME/rhtlc-wstunnel/ca/
 $ openssl genrsa -out private/ca.key.pem 4096
 ```
 
@@ -152,7 +152,7 @@ Common Name []:wstunnel Development Root CA
 Email Address []:
 ```
 
-Generate a key for the wstunnel server, generate a certificate signing request (CSR) and create a certificate with our
+Generate a key for the rhtlc-wstunnel server, generate a certificate signing request (CSR) and create a certificate with our
 CA for the CSR:
 
 ```shell
@@ -178,7 +178,7 @@ Sign the certificate? [y/n]:y
 1 out of 1 certificate requests certified, commit? [y/n]y
 ```
 
-Next we do the same thing (generate key, create request, sign request) but then for a wstunnel client:
+Next we do the same thing (generate key, create request, sign request) but then for a rhtlc-wstunnel client:
 
 ```shell
 $ openssl genrsa -out private/wstunnel-client-1.pem 2048
@@ -203,16 +203,16 @@ Sign the certificate? [y/n]:y
 1 out of 1 certificate requests certified, commit? [y/n]y
 ```
 
-## Using mTLS on the wstunnel server side
+## Using mTLS on the rhtlc-wstunnel server side
 
 This section assumes you have generated the certificate authority, keys, certificates, etc. as outlined in the "
 Generating keys and certificates" section.
 
-Start a `wstunnel` server and make it use the server key pair certificate (`--tls-certificate` and `--tls-private-key`)
+Start an `rhtlc-wstunnel` server and make it use the server key pair certificate (`--tls-certificate` and `--tls-private-key`)
 and configure it to authenticate clients via mTLS (`--tls-client-ca-certs`):
 
 ```shell
-$ wstunnel server \
+$ rhtlc-wstunnel server \
    --tls-certificate ./certs/wstunnel-server.cert.pem \
    --tls-private-key ./private/wstunnel-server.pem \
    --tls-client-ca-certs ./certs/ca.cert.pem \
@@ -221,7 +221,7 @@ $ wstunnel server \
 
 ### Testing
 
-You can use `openssl` to test connecting with the client certificate to the wstunnel server:
+You can use `openssl` to test connecting with the client certificate to the rhtlc-wstunnel server:
 
 ```shell
 $ openssl s_client -connect 127.0.0.1:8443 \
@@ -261,14 +261,14 @@ tells `curl` which CA certificate to use to verify the certificate of the **serv
 $ curl -vvv --cacert ./certs/ca.cert.pem https://127.0.0.1:8443
 ```
 
-## Using mTLS on the wstunnel client side
+## Using mTLS on the rhtlc-wstunnel client side
 
 This section assumes you have generated the certificate authority, keys, certificates, etc. as outlined in the "
-Generating keys and certificates" section. It also assumes you have a running wstunnel server with mTLS configured. For
-example as setup in the `Using mTLS on the wstunnel server side` section.
+Generating keys and certificates" section. It also assumes you have a running rhtlc-wstunnel server with mTLS configured. For
+example as setup in the `Using mTLS on the rhtlc-wstunnel server side` section.
 
 ```shell
-$ wstunnel client \
+$ rhtlc-wstunnel client \
    --tls-certificate ./certs/wstunnel-client-1.cert.pem \
    --tls-private-key ./private/wstunnel-client-1.pem \
    -L tcp://1212:localhost:1313 \

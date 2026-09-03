@@ -229,7 +229,7 @@ pub async fn create_client(
         executor,
     )
     .await?;
-    info!("Starting wstunnel client v{}", env!("CARGO_PKG_VERSION"),);
+    info!("Starting rhtlc-wstunnel client v{}", env!("CARGO_PKG_VERSION"),);
 
     Ok(client)
 }
@@ -586,7 +586,7 @@ async fn run_server_impl(args: ServerCreationRequest, executor: impl TokioExecut
     let server = Server::new(server_config, executor);
 
     info!(
-        "Starting wstunnel server v{} with config {:?}",
+        "Starting rhtlc-wstunnel server v{} with config {:?}",
         env!("CARGO_PKG_VERSION"),
         server.config
     );

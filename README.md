@@ -7,6 +7,8 @@
   <br/>
 </p>
 
+> **RHTLC fork:** This repository builds **`rhtlc-wstunnel`** for Red Hat Training Lab Connector. In command examples below, use `rhtlc-wstunnel` instead of upstream `wstunnel`. Releases: [tmichett/wstunnel](https://github.com/tmichett/wstunnel).
+
 ## Summary
 
 * [Description](#description)
@@ -73,12 +75,12 @@ What to expect from previous version:
 ## Demo server <a name="demo"></a>
 
 If you just want to try out that you can bypass your proxy/firewall.
-You can give it a try with wstunnel demo server.
+You can give it a try with the rhtlc-wstunnel demo server.
 
 ```bash
-# In a terminal start wstunnel client
+# In a terminal start rhtlc-wstunnel client
 # You can set as tls-sni-override whatever domain you want. The tunnel is the only one that is going to be allowed. 
-wstunnel client -L 'tcp://4443:10.43.0.11:444' -P demo --tls-sni-override=google.fr wss://49.13.58.9
+rhtlc-wstunnel client -L 'tcp://4443:10.43.0.11:444' -P demo --tls-sni-override=google.fr wss://49.13.58.9
 
 # on another terminal, run curl and it should return you this greetings
 curl -k https://localhost:4443
@@ -89,22 +91,22 @@ curl -k https://localhost:4443
 ## Command line <a name="cmd"></a>
 
 ```
-Usage: wstunnel client [OPTIONS] <ws[s]|http[s]|wts://wstunnel.server.com[:port]>
+Usage: rhtlc-wstunnel client [OPTIONS] <ws[s]|http[s]|wts://rhtlc-wstunnel.example.com[:port]>
 
 Arguments:
-  <ws[s]|http[s]|wts://wstunnel.server.com[:port]>
-          Address of the wstunnel server
+  <ws[s]|http[s]|wts://rhtlc-wstunnel.example.com[:port]>
+          Address of the rhtlc-wstunnel server
           You can use websocket, http2 or webtransport as transport protocol. Use websocket if you are unsure.
-          Example: For websocket with TLS wss://wstunnel.example.com or without ws://wstunnel.example.com
-                   For http2 with TLS https://wstunnel.example.com or without http://wstunnel.example.com
-                   For webtransport wts://wstunnel.example.com (always TLS)
+          Example: For websocket with TLS wss://rhtlc-wstunnel.example.com or without ws://rhtlc-wstunnel.example.com
+                   For http2 with TLS https://rhtlc-wstunnel.example.com or without http://rhtlc-wstunnel.example.com
+                   For webtransport wts://rhtlc-wstunnel.example.com (always TLS)
           
           *WARNING* HTTP2 as transport protocol is harder to make it works because:
             - If you are behind a (reverse) proxy/CDN they are going to buffer the whole request before forwarding it to the server
               Obviously, this is not going to work for tunneling traffic
-            - if you have wstunnel behind a reverse proxy, most of them (i.e: nginx) are going to turn http2 request into http1
+            - if you have rhtlc-wstunnel behind a reverse proxy, most of them (i.e: nginx) are going to turn http2 request into http1
               This is not going to work, because http1 does not support streaming naturally
-            - The only way to make it works with http2 is to have wstunnel directly exposed to the internet without any reverse proxy in front of it
+            - The only way to make it works with http2 is to have rhtlc-wstunnel directly exposed to the internet without any reverse proxy in front of it
           
           *WARNING* WEBTRANSPORT (wts://) runs on HTTP/3 over QUIC, so:
             - It needs UDP to be reachable end to end on that port. Firewalls and container port
@@ -135,9 +137,9 @@ Options:
           'tproxy+udp://[::1]:1212?timeout_sec=10'  listen locally on udp on port 1212 as a *transparent proxy* and forward dynamically requested tunnel
                                                     linux only and requires sudo/CAP_NET_ADMIN
           
-          'stdio://google.com:443'         =>       listen for data from stdio, mainly for `ssh -o ProxyCommand="wstunnel client -L stdio://%h:%p ws://localhost:8080" my-server`
+          'stdio://google.com:443'         =>       listen for data from stdio, mainly for `ssh -o ProxyCommand="rhtlc-wstunnel client -L stdio://%h:%p ws://localhost:8080" my-server`
           
-          'unix:///tmp/wstunnel.sock:g.com:443' =>  listen for data from unix socket of path /tmp/wstunnel.sock and forward to g.com:443
+          'unix:///tmp/rhtlc-wstunnel.sock:g.com:443' =>  listen for data from unix socket of path /tmp/rhtlc-wstunnel.sock and forward to g.com:443
 
   -R, --remote-to-local <{tcp,udp,socks5,unix}://[BIND:]PORT:HOST:PORT>
           Listen on remote and forwards traffic from local. Can be specified multiple times. Only tcp is supported
@@ -146,7 +148,7 @@ Options:
           'udp://1212:1.1.1.1:53'          =>     listen on server for incoming udp on port 1212 and forward to cloudflare dns 1.1.1.1 on port 53 from local machine
           'socks5://[::1]:1212'            =>     listen on server for incoming socks5 request on port 1212 and forward dynamically request from local machine (login/password is supported)
           'http://[::1]:1212'         =>     listen on server for incoming http proxy request on port 1212 and forward dynamically request from local machine (login/password is supported)
-          'unix://wstunnel.sock:g.com:443' =>     listen on server for incoming data from unix socket of path wstunnel.sock and forward to g.com:443 from local machine
+          'unix://rhtlc-wstunnel.sock:g.com:443' =>     listen on server for incoming data from unix socket of path rhtlc-wstunnel.sock and forward to g.com:443 from local machine
 
       --no-color
           Disable color output in logs
@@ -155,7 +157,7 @@ Options:
 
       --socket-so-mark <INT>
           (linux only) Mark network packet with SO_MARK sockoption with the specified value.
-          You need to use {root, sudo, capabilities} to run wstunnel when using this option
+          You need to use {root, sudo, capabilities} to run rhtlc-wstunnel when using this option
 
   -c, --connection-min-idle <INT>
           Client will maintain a pool of open connection to the server, in order to speed up the connection process.
@@ -201,7 +203,7 @@ Options:
           Warning: Most reverse proxies rely on it
 
       --tls-ech-enable
-          Enable ECH (encrypted sni) during TLS handshake to wstunnel server.
+          Enable ECH (encrypted sni) during TLS handshake to rhtlc-wstunnel server.
           Warning: Ech DNS config is not refreshed over time. It is retrieved only once at startup of the program  
 
       --tls-verify-certificate
@@ -227,7 +229,7 @@ Options:
           Use a specific prefix that will show up in the http path during the upgrade request.
           Useful if you need to route requests server side but don't have vhosts
           When using mTLS this option overrides the default behavior of using the common name of the
-          client's certificate. This will likely result in the wstunnel server rejecting the connection.
+          client's certificate. This will likely result in the rhtlc-wstunnel server rejecting the connection.
           
           [env: WSTUNNEL_HTTP_UPGRADE_PATH_PREFIX=]
           [default: v1]
@@ -290,11 +292,11 @@ Options:
 
 ```
 SERVER
-Usage: wstunnel server [OPTIONS] <ws[s]|wts://0.0.0.0[:port]>
+Usage: rhtlc-wstunnel server [OPTIONS] <ws[s]|wts://0.0.0.0[:port]>
 
 Arguments:
   <ws[s]|wts://0.0.0.0[:port]>
-          Address of the wstunnel server to bind to
+          Address of the rhtlc-wstunnel server to bind to
           Example: With TLS wss://0.0.0.0:8080 or without ws://[::]:8080
           
           The server is capable of detecting by itself if the request is websocket or http2. So you don't need to specify it.
@@ -314,7 +316,7 @@ Options:
 
       --socket-so-mark <INT>
           (linux only) Mark network packet with SO_MARK sockoption with the specified value.
-          You need to use {root, sudo, capabilities} to run wstunnel when using this option
+          You need to use {root, sudo, capabilities} to run rhtlc-wstunnel when using this option
 
       --no-color
           Disable color output in logs
@@ -437,7 +439,7 @@ docker pull ghcr.io/erebe/wstunnel:latest
 * [Android](#android)
 * [Proxy easily any traffic with transparent proxy (linux only)](#tproxy)
 * [Reverse tunneling](#reverse)
-* [How to secure access of your wstunnel server](#secure)
+* [How to secure access of your rhtlc-wstunnel server](#secure)
 * [Use HTTP2 instead of websocket for transport protocol](#http2)
 * [Use WebTransport instead of websocket for transport protocol](#webtransport)
 * [Maximize your stealthiness/Make your traffic discrete](#stealth)
@@ -452,17 +454,17 @@ You can take reference to [this article](https://iximiuz.com/en/posts/ssh-tunnel
 
 ### Simplest one <a name="simple"></a>
 
-On your remote host, start the wstunnel's server by typing this command in your terminal
+On your remote host, start the rhtlc-wstunnel server by typing this command in your terminal
 
 ```bash
-wstunnel server wss://[::]:8080
+rhtlc-wstunnel server wss://[::]:8080
 ```
 
 This will create a websocket server listening on any interface on port 8080.
 On the client side use this command to forward traffic through the websocket tunnel
 
 ```bash
-wstunnel client -L socks5://127.0.0.1:8888 --connection-min-idle 5 wss://myRemoteHost:8080
+rhtlc-wstunnel client -L socks5://127.0.0.1:8888 --connection-min-idle 5 wss://myRemoteHost:8080
 ```
 
 This command will create a socks5 server listening on port 8888 of the loopback interface and will forward traffic
@@ -486,10 +488,10 @@ curl -x socks5h://127.0.0.1:8888 http://google.com/
 
 ### As proxy command for SSH <a name="ssh"></a>
 
-You can specify `stdio` as source port on the client side if you wish to use wstunnel as part of a proxy command for ssh
+You can specify `stdio` as source port on the client side if you wish to use rhtlc-wstunnel as part of a proxy command for ssh
 
 ```bash
-ssh -o ProxyCommand="wstunnel client --log-lvl=off -L stdio://%h:%p ws://myRemoteHost:8080" my-server
+ssh -o ProxyCommand="rhtlc-wstunnel client --log-lvl=off -L stdio://%h:%p ws://myRemoteHost:8080" my-server
 ```
 
 ---
@@ -497,12 +499,12 @@ ssh -o ProxyCommand="wstunnel client --log-lvl=off -L stdio://%h:%p ws://myRemot
 ### When behind a corporate proxy <a name="corporate"></a>
 
 An other useful example is when you want to bypass an http proxy (a corporate proxy for example)
-The most reliable way to do it is to use wstunnel as described below
+The most reliable way to do it is to use rhtlc-wstunnel as described below
 
-Start your wstunnel server with tls activated
+Start your rhtlc-wstunnel server with tls activated
 
 ```bash
-wstunnel server wss://[::]:443 --restrict-to 127.0.0.1:22
+rhtlc-wstunnel server wss://[::]:443 --restrict-to 127.0.0.1:22
 ```
 
 The server will listen on any interface using port 443 (https) and restrict traffic to be forwarded only to the ssh
@@ -511,13 +513,13 @@ daemon.
 **Be aware that the server will use self signed certificate with weak cryptographic algorithm.
 It was made in order to add the least possible overhead while still being compliant with tls.**
 
-**Do not rely on wstunnel to protect your privacy, if it is one of your concerns, you should only forwards traffic that
+**Do not rely on rhtlc-wstunnel to protect your privacy, if it is one of your concerns, you should only forwards traffic that
 is already secure by design (ie: https or vpn traffic)**
 
 Now on the client side start the client with
 
 ```bash
-wstunnel client -L tcp://9999:127.0.0.1:22 -p http://mycorporateproxy:8080 wss://myRemoteHost:443
+rhtlc-wstunnel client -L tcp://9999:127.0.0.1:22 -p http://mycorporateproxy:8080 wss://myRemoteHost:443
 ```
 
 It will start a tcp server on port 9999 that will contact the corporate proxy, negotiate a tls connection with the
@@ -533,7 +535,7 @@ ssh -p 9999 login@127.0.0.1
 
 ### Wireguard and wstunnel <a name="wireguard"></a>
 
-You can find a full [tutorial](https://community.hetzner.com/tutorials/obfuscating-wireguard-using-wstunnel) that explain how to setup wstunnel and wireguard at [here](https://community.hetzner.com/tutorials/obfuscating-wireguard-using-wstunnel)
+You can find a full [tutorial](https://community.hetzner.com/tutorials/obfuscating-wireguard-using-wstunnel) that explain how to setup rhtlc-wstunnel and wireguard at [here](https://community.hetzner.com/tutorials/obfuscating-wireguard-using-wstunnel)
 
 For a quick explanation see below.
 
@@ -550,16 +552,16 @@ AllowedIPs = 0.0.0.0/0, ::/0
 Endpoint = my.server.com:51820
 ```
 
-Start wstunnel server on my.server.com like this
+Start rhtlc-wstunnel server on my.server.com like this
 
 ```
-wstunnel server --restrict-to localhost:51820 wss://[::]:443
+rhtlc-wstunnel server --restrict-to localhost:51820 wss://[::]:443
 ```
 
 on your local machine start the client like this
 
 ```
-wstunnel client -L 'udp://51820:localhost:51820?timeout_sec=0' wss://my.server.com:443
+rhtlc-wstunnel client -L 'udp://51820:localhost:51820?timeout_sec=0' wss://my.server.com:443
 ```
 
 change your wireguard client config to something
@@ -576,9 +578,9 @@ MTU = 1400
 [Peer]
 PublicKey = 9iicV7Stdl/U0RH1BNf3VvlVjaa4Eus6QPEfEz6cR0c=
 AllowedIPs = 0.0.0.0/0, ::/0
-# Should target port where wstunnel client is listenning to
+# Should target port where rhtlc-wstunnel client is listenning to
 Endpoint = localhost:51820
-# Should not be necessary if you enable wstunnel client websocket ping
+# Should not be necessary if you enable rhtlc-wstunnel client websocket ping
 PersistentKeepalive = 20
 ```
 
@@ -602,10 +604,10 @@ FAQ
 - If you see some throughput issue, be sure to lower the MTU of your wireguard interface (you can do it via config file)
   to something like 1300 or you will endup fragmenting udp packet (due to overhead of other layer) which is always
   causing issues
-- If wstunnel cannot connect to server while wireguard is on, be sure you have added a static route via your main
-  gateway for the ip of wstunnel server.
+- If rhtlc-wstunnel cannot connect to server while wireguard is on, be sure you have added a static route via your main
+  gateway for the ip of rhtlc-wstunnel server.
   Else if you forward all the traffic without putting a static route, you will endup looping your traffic wireguard
-  interface -> wstunnel client -> wireguard interface
+  interface -> rhtlc-wstunnel client -> wireguard interface
 - If you have trouble making it works on windows, please check this issue
   https://github.com/erebe/wstunnel/issues/252
 
@@ -615,7 +617,7 @@ FAQ
 
 You can use the android binary and use termux to run it on your phone.
 
-If you want a guide regarding how to use wstunnel on Android, you can follow this [guide](https://community.hetzner.com/tutorials/obfuscating-wireguard-using-wstunnel)
+If you want a guide regarding how to use rhtlc-wstunnel on Android, you can follow this [guide](https://community.hetzner.com/tutorials/obfuscating-wireguard-using-wstunnel)
 
 ---
 
@@ -623,10 +625,10 @@ If you want a guide regarding how to use wstunnel on Android, you can follow thi
 ### Transparent proxy (linux only) <a name="tproxy"></a>
 
 Transparent proxy allows to easily proxy any program.
-Start wstunnel with
+Start rhtlc-wstunnel with
 
 ```
-sudo wstunnel client -L 'tproxy+tcp://1080' -L 'tproxy+udp://1080' wss://my.server.com:443
+sudo rhtlc-wstunnel client -L 'tproxy+tcp://1080' -L 'tproxy+udp://1080' wss://my.server.com:443
 ```
 
 use this project to route traffic seamlessly https://github.com/NOBLES5E/cproxy. It works with any program
@@ -645,10 +647,10 @@ cproxy --port 1080 --mode tproxy -- bash
 
 ### Reverse tunneling <a name="reverse"></a>
 
-Start wstunnel with
+Start rhtlc-wstunnel with
 
 ```
-sudo wstunnel client -R 'tcp://[::]:8000:localhost:8000' wss://my.server.com:443
+sudo rhtlc-wstunnel client -R 'tcp://[::]:8000:localhost:8000' wss://my.server.com:443
 ```
 
 In another terminal, start a simple webserver on your local machine
@@ -665,23 +667,23 @@ curl http://localhost:8000
 
 ---
 
-### How to secure the access of your wstunnel server <a name="secure"></a>
+### How to secure the access of your rhtlc-wstunnel server <a name="secure"></a>
 
 Generate a secret, let's say `h3GywpDrP6gJEdZ6xbJbZZVFmvFZDCa4KcRd`
 
 Now start you server with the following command
 
 ```bash
-wstunnel server --restrict-http-upgrade-path-prefix h3GywpDrP6gJEdZ6xbJbZZVFmvFZDCa4KcRd  wss://[::]:443 
+rhtlc-wstunnel server --restrict-http-upgrade-path-prefix h3GywpDrP6gJEdZ6xbJbZZVFmvFZDCa4KcRd  wss://[::]:443 
 ```
 
 And start your client with
 
 ```bash
-wstunnel client --http-upgrade-path-prefix h3GywpDrP6gJEdZ6xbJbZZVFmvFZDCa4KcRd ... wss://myRemoteHost
+rhtlc-wstunnel client --http-upgrade-path-prefix h3GywpDrP6gJEdZ6xbJbZZVFmvFZDCa4KcRd ... wss://myRemoteHost
 ```
 
-Now your wstunnel server, will only accept connection if the client specify the correct path prefix during the upgrade
+Now your rhtlc-wstunnel server, will only accept connection if the client specify the correct path prefix during the upgrade
 request.
 
 If you need more customization, you can use a config file to specify specific rules with `--restrict-config`.
@@ -693,26 +695,26 @@ You can find examples of restriction rules [there](https://github.com/erebe/wstu
 
 Use this only if websocket is blocked by your firewall/proxy. Otherwise, it is less performant than websocket.
 
-Start your wstunnel server as usual with
+Start your rhtlc-wstunnel server as usual with
 
 ```bash
-wstunnel server wss://[::]:8080
+rhtlc-wstunnel server wss://[::]:8080
 ```
 
 On the client the only difference is to specify https:// instead of wss://
 
 ```bash
-wstunnel client -L socks5://127.0.0.1:8888 https://myRemoteHost:8080
+rhtlc-wstunnel client -L socks5://127.0.0.1:8888 https://myRemoteHost:8080
 ```
 
 **WARNING** HTTP2 as transport protocol is harder to make it works because:
 
 - If you are behind a (reverse) proxy/CDN they may buffer the whole request before forwarding it to the server.
   Cloudflare is doing that, and obviously, this is not going to work for tunneling traffic
-- if you have wstunnel behind a reverse proxy, most of them (i.e: nginx) are going to turn http2 request into http1
+- if you have rhtlc-wstunnel behind a reverse proxy, most of them (i.e: nginx) are going to turn http2 request into http1
   This is not going to work, because http1 does not support streaming naturally
 
-The only way to make it works with HTTP2 is to have wstunnel server directly exposed to the internet without any reverse
+The only way to make it works with HTTP2 is to have rhtlc-wstunnel server directly exposed to the internet without any reverse
 proxy in front of it
 
 In addition, you may also want to play with the request headers (i.e: content-length and content-type) to make it looks
@@ -729,20 +731,20 @@ The server does not serve it by default, because it needs a UDP socket. Enable i
 and it will listen on UDP on the same port as its TCP listener:
 
 ```bash
-wstunnel server --enable-webtransport wss://[::]:8080
+rhtlc-wstunnel server --enable-webtransport wss://[::]:8080
 ```
 
 The `wts://` scheme is a shorthand for the same thing:
 
 ```bash
-wstunnel server wts://[::]:8080
+rhtlc-wstunnel server wts://[::]:8080
 ```
 
 Either way the TCP listener keeps running, so a single server serves websocket, http2 and webtransport clients at
 the same time. On the client, the only difference is to specify wts:// instead of wss://
 
 ```bash
-wstunnel client -L socks5://127.0.0.1:8888 wts://myRemoteHost:8080
+rhtlc-wstunnel client -L socks5://127.0.0.1:8888 wts://myRemoteHost:8080
 ```
 
 **WARNING** Things to know before using WebTransport:
@@ -754,7 +756,7 @@ wstunnel client -L socks5://127.0.0.1:8888 wts://myRemoteHost:8080
 - `--http-proxy` does not work: an HTTP CONNECT proxy tunnels TCP, and QUIC is UDP. Use `wss://` or `https://`
   if you must go through a proxy
 - `--tls-sni-disable` and `--tls-ech-enable` are not supported either. `--tls-sni-override` does work
-- A reverse proxy in front of wstunnel must forward QUIC/UDP, not terminate HTTP/3. Most do not, so as with
+- A reverse proxy in front of rhtlc-wstunnel must forward QUIC/UDP, not terminate HTTP/3. Most do not, so as with
   http2 you generally want the server directly exposed
 
 mTLS, path prefix restrictions, restriction rules, and server certificate auto-reload all behave as they do
@@ -762,13 +764,13 @@ over websocket.
 
 ### Maximize your stealthiness/Make your traffic discrete <a name="stealth"></a>
 
-* Use wstunnel with TLS activated (wss://) and use your own certificate
+* Use rhtlc-wstunnel with TLS activated (wss://) and use your own certificate
     * Embedded certificate is self-signed and are the same for everyone, so can be easily fingerprinted/flagged
     * Use valid certificate (i.e: with Let's Encrypt), self-signed certificate are suspicious
 * Use a custom http path prefix (see `--http-upgrade-path-prefix` option)
-    * To avoid having the same url than every other wstunnel user
+    * To avoid having the same url than every other rhtlc-wstunnel deployment
 * Change your tls-sni-override to a domain is known to be allowed (i.e: google.com, baidu.com, etc...)
-    * this will not work if your wstunnel server is behind a reverse proxy (i.e: Nginx, Cloudflare, HAProxy, ...)
+    * this will not work if your rhtlc-wstunnel server is behind a reverse proxy (i.e: Nginx, Cloudflare, HAProxy, ...)
 
 ## Benchmark <a name="bench"></a>
 
@@ -786,5 +788,5 @@ and run those commands at the root of the project
 
 ```
 cargo build --package wstunnel-cli
-target/debug/wstunnel ...
+target/debug/rhtlc-wstunnel ...
 ```
