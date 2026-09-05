@@ -2,10 +2,7 @@
 name = "wstunnel-cli"
 version = "6.0.1"
 edition = "2024"
-authors = [
-    "Travis Michette <tmichett@redhat.com>",
-    "Red Hat Training <training@redhat.com>",
-]
+authors = ["Travis Michette <tmichett@redhat.com>", "Red Hat Training <training@redhat.com>"]
 description = "Red Hat Training Lab Connector (RHTLC) tunnel CLI (rhtlc-wstunnel)"
 homepage = "https://github.com/tmichett/wstunnel"
 repository = "https://github.com/tmichett/wstunnel.git"
