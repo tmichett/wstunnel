@@ -1,8 +1,13 @@
 [package]
 name = "wstunnel"
-version = "6.0.0"
+version = "6.0.1"
 edition = "2024"
-repository = "https://github.com/erebe/wstunnel.git"
+authors = ["Travis Michette <tmichett@redhat.com>", "Red Hat Training <training@redhat.com>"]
+description = "Red Hat Training Lab Connector (RHTLC) WebSocket/HTTP2/WebTransport tunnel library"
+homepage = "https://github.com/tmichett/wstunnel"
+repository = "https://github.com/tmichett/wstunnel.git"
+documentation = "https://github.com/RedHatTraining/dle-wstunnel-ole"
+license = "BSD-3-Clause"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
