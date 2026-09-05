@@ -8,6 +8,9 @@
 </p>
 
 > **RHTLC fork:** This repository builds **`rhtlc-wstunnel`** for Red Hat Training Lab Connector. In command examples below, use `rhtlc-wstunnel` instead of upstream `wstunnel`. Releases: [tmichett/wstunnel](https://github.com/tmichett/wstunnel).
+>
+> Maintained by Travis Michette (`tmichett@redhat.com`) for Red Hat Training (`training@redhat.com`).
+> Source: [tmichett/wstunnel](https://github.com/tmichett/wstunnel) — Product: [RedHatTraining/dle-wstunnel-ole](https://github.com/RedHatTraining/dle-wstunnel-ole).
 
 ## Summary
 

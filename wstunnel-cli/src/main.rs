@@ -17,15 +17,30 @@ use tikv_jemallocator::Jemalloc;
 #[global_allocator]
 static GLOBAL: Jemalloc = Jemalloc;
 
-/// Red Hat Training Lab Connector (RHTLC) WSTunnel uses Websockets or HTTP2 protocol to tunnel {TCP,UDP} traffic
+const AFTER_HELP: &str = "\
+Changed in this RHTLC fork:
+  Binary name is rhtlc-wstunnel (compile-time), not upstream wstunnel.
+  Version follows the RHTLC 6.x line.
+  This binary is the tunnel transport for the RHTLC Client (OLE lab connectivity).
+
+Source:     https://github.com/tmichett/wstunnel
+Product:    https://github.com/RedHatTraining/dle-wstunnel-ole
+Contact:    Red Hat Training <training@redhat.com>
+Maintainer: Travis Michette <tmichett@redhat.com>
+";
+
+/// Red Hat Training Lab Connector (RHTLC) WSTunnel uses WebSocket, HTTP/2, or WebTransport
+/// to tunnel {TCP,UDP} traffic. This RHTLC fork ships as `rhtlc-wstunnel` (not upstream
+/// `wstunnel`) and is the tunnel transport for the RHTLC Client.
+///
 /// wsTunnelClient <---> wsTunnelServer <---> RemoteHost
-/// Specifically, this application will be used to tunnel TCP traffic and is to be used as the transport for the RHTLC Client application.
 #[derive(clap::Parser, Debug)]
 #[command(
     name = "rhtlc-wstunnel",
     version,
+    author,
     about,
-    long_about = None,
+    after_help = AFTER_HELP,
     verbatim_doc_comment,
 )]
 pub struct Wstunnel {
